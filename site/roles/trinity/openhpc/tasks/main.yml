@@ -21,6 +21,14 @@
     state: link
   when: ansible_connection not in 'lchroot' and "controllers" in group_names
 
+- name: create symlink from {{trix_root}} to /opt/ohpc on computes for packages that insist on creating path vars that point to the real path on the controller
+  file:
+    src: '/opt/ohpc'
+    dest: '{{trix_root}}/ohpc'
+    state: link
+    force: yes
+  when: (ansible_connection in 'lchroot' or "controllers" not in group_names)
+
 #DON'T do this on 60 nodes with a high fork count or most will fail
 #- name: Install ohpc-release
 #  yum:

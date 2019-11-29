@@ -4,6 +4,17 @@
     compute: '{{ True if (ansible_connection not in "lchroot" and "ood" not in group_names and "logins" not in group_names) else False }}'
   tags: always
 
+- name: 'ensure cloud init services are disabled as these interfere with weka networking and cause long timeouts on reboot'
+  service:
+    name: '{{ item }}'
+    enabled: false
+  with_items:
+    - 'cloud-init'
+    - 'cloud-init-local'
+    - 'cloud-config'
+    - 'cloud-final'
+  when: disable_cloud_init|bool
+
 - name: check if /usr/bin/firewall-cmd exists
   stat:
     path: "/usr/bin/firewall-cmd"
@@ -71,12 +82,14 @@
     src: "resolv.conf"
     dest: "/etc/resolv.conf"
 
-- name: Use the controller as default gateway
+- name: Set the default gateway (to controller node unless the default_gateway var is overridden)
   lineinfile:
     path: "/etc/sysconfig/network"
-    line: "GATEWAY={{ trix_ctrl_ip }}"
+    line: "GATEWAY={{ default_gateway }}"
+    regexp: "^[ \t]*GATEWAY"
     state: present
     create: yes
+  notify: restart network
 
 - name: Get the controller's timezone
   stat:

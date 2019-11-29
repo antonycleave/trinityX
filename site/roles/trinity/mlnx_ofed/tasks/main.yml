@@ -6,10 +6,5 @@
       name: '{{mellanox_package}}'
       state: latest
       disable_gpg_check: yes
-    register: mlnx_install
-
-  - name: create a /run/mlnx_installer_changed file
-    file:
-      path: /run/mlnx_installer_changed
-      state: touch
-    when: mlnx_install.changed|bool
+    notify: reboot node
+    

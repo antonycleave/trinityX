@@ -22,6 +22,14 @@
   with_items: '{{ syslog_file_template_rules }}'
   notify: restart rsyslog
   
+- name: Configure logrotate for cluster messages
+  template:
+    src: 'cluster-messages.logrotate.d'
+    dest: '/etc/logrotate.d/cluster-messages'
+    owner: root
+    group: root
+  when: rotate_cluster_messages|bool
+
 - name: Add forwarding rules
   template:
     src: 'forwarding.conf'

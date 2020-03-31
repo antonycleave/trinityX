@@ -19,15 +19,9 @@ project_id: '000000'
 ha: false
 
 
-# Should we use content of the installation CD/USB-stick
-# to install TrinityX
-
-local_install: false
-
-
 # A domain name to be assigned to the controller(s) and nodes
 # on the internal network.
-# Luna's provisioning network name will be set to the same value.
+# Luna's provisioning network name (if used) will be set to the same value.
 
 trix_domain: cluster
 
@@ -72,7 +66,7 @@ trix_cluster_dhcp_end: 10.141.140.0
 # Path to which the standard TrinityX files will be installed.
 # If not set, it will default to /trinity
 
-trix_root: '/trinity'
+trix_root: '/vscaler'
 
 # The TrinityX root contains multiple subdirectories for different uses:
 # - trix_images For the compute node images

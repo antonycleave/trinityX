@@ -7,3 +7,5 @@ packaging/rpm/SPECS/
 packaging/rpm/SRPMS/
 packaging/iso/ISO/
 packaging/iso/TrinityX-*.iso
+site/roles/vscaler/
+site/roles/site-specific

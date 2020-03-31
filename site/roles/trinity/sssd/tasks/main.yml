@@ -18,6 +18,7 @@
 
 - name: Copy CA certificate
   copy:
+    remote_src: true
     src: "{{ ssl_ca_cert }}"
     dest: /etc/openldap/certs/cluster-ca.crt
 

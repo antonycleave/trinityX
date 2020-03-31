@@ -82,6 +82,7 @@
 
 - name: Add cluster CA certificate to /etc/openldap/certs
   copy:
+    remote_src: true
     src: '{{ openldap_tls_cacrt }}'
     dest: '/etc/openldap/certs/'
 

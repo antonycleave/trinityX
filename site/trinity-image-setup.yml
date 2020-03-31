@@ -20,7 +20,6 @@
 
   - role: trinity/repos
     repos:
-    - repo: '{{ userspace_repo }}'
     - repo: epel-release
     - repo: '{{luna_repo}}'
     - '{{ohpc_repo_dict}}'
@@ -47,20 +46,6 @@
       - mlnx-ofed
       - repos
     when: use_mellanox_ofed|bool
-
-  - role: trinity/repos
-    repos:
-    - { repo: 'http://mirror.nsc.liu.se/centos-store/{{centos_fullvers}}/os/x86_64/', remote_key: 'http://mirror.nsc.liu.se/centos-store/RPM-GPG-KEY-CentOS-7', name: 'CentOS-{{centos_fullvers}}-Base' }
-    - { repo: 'http://mirror.nsc.liu.se/centos-store/{{centos_fullvers}}/updates/x86_64/', remote_key: 'http://mirror.nsc.liu.se/centos-store/RPM-GPG-KEY-CentOS-7', name: 'CentOS-{{centos_fullvers}}-Updates' }
-    - { repo: 'http://mirror.nsc.liu.se/centos-store/{{centos_fullvers}}/extras/x86_64/', remote_key: 'http://mirror.nsc.liu.se/centos-store/RPM-GPG-KEY-CentOS-7', name: 'CentOS-{{centos_fullvers}}-Extras' }
-    - { repo: 'http://mirror.nsc.liu.se/centos-store/{{centos_fullvers}}/centosplus/x86_64/', remote_key: 'http://mirror.nsc.liu.se/centos-store/RPM-GPG-KEY-CentOS-7', name: 'CentOS-{{centos_fullvers}}-centosplusplus' }
-    - { repo: 'http://mirror.nsc.liu.se/centos-store/{{centos_fullvers}}/fasttrack/x86_64/', remote_key: 'http://mirror.nsc.liu.se/centos-store/RPM-GPG-KEY-CentOS-7', name: 'CentOS-{{centos_fullvers}}-fasttrack' }
-    tags: 
-      - repos
-    when: 
-      - use_centos_vault|bool
-      - not enable_repomirror|bool
-      - not local_install|bool
 
   - role: trinity/packages
     tags: packages
@@ -96,11 +81,10 @@
     - path: '{{ trix_home }}'
       remote: '{{ trix_ctrl_hostname }}:{{ trix_home }}'
       options: 'defaults,nfsvers=4,rw,retrans=4,noatime'
+    - path: '/opt/ohpc'
+      remote: '{{ trix_ctrl_hostname }}:{{ trix_ohpc }}'
+      options: 'defaults,nfsvers=4,ro,retrans=4,noatime'
     tags: nfs-mounts
-
-  - role: trinity/environment-modules
-    when: enable_openhpc == false
-    tags: environment-modules
 
   - role: trinity/sssd
     sss_allowed_groups:
@@ -151,11 +135,3 @@
     when: '"vncnodes" in group_names'
     tags: graphical_desktop
 
-  - role: trinity/nfs-mounts
-    nfs_enable_rdma: false
-    nfs_mounts:
-    - path: '/opt/ohpc'
-      remote: '{{ trix_ctrl_hostname }}:{{ trix_ohpc }}'
-      options: 'defaults,nfsvers=4,ro,retrans=4,noatime'
-    when: enable_openhpc == true
-    tags: nfs-mounts

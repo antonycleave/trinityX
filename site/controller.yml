@@ -15,20 +15,14 @@
       tags: init
       
     - role: trinity/filesystem
-      when: build_zones_from_inventory|bool
+      when:
+        - ha or ctrl_dedicated_storage|bool
 
     - role: trinity/repos
       repos:
-      - repo: '{{ trix_local_repo_baseurl }}'
-        name: trinityx-local
-      tags: local_repo
-      when: local_install
-
-    - role: trinity/repos
-      repos:
-      - repo: '{{ userspace_repo }}'
       - repo: epel-release
       - repo: '{{luna_repo}}'
+      - repo: '{{trinity_repo}}'
       - '{{ohpc_repo_dict}}'
       - '{{ohpc_updates_repo_dict}}'
       tags: repos
@@ -50,20 +44,6 @@
 
     - role: trinity/repos
       repos:
-      - { repo: 'http://mirror.nsc.liu.se/centos-store/{{centos_fullvers}}/os/x86_64/', remote_key: 'http://mirror.nsc.liu.se/centos-store/RPM-GPG-KEY-CentOS-7', name: 'CentOS-{{centos_fullvers}}-Base' }
-      - { repo: 'http://mirror.nsc.liu.se/centos-store/{{centos_fullvers}}/updates/x86_64/', remote_key: 'http://mirror.nsc.liu.se/centos-store/RPM-GPG-KEY-CentOS-7', name: 'CentOS-{{centos_fullvers}}-Updates' }
-      - { repo: 'http://mirror.nsc.liu.se/centos-store/{{centos_fullvers}}/extras/x86_64/', remote_key: 'http://mirror.nsc.liu.se/centos-store/RPM-GPG-KEY-CentOS-7', name: 'CentOS-{{centos_fullvers}}-Extras' }
-      - { repo: 'http://mirror.nsc.liu.se/centos-store/{{centos_fullvers}}/centosplus/x86_64/', remote_key: 'http://mirror.nsc.liu.se/centos-store/RPM-GPG-KEY-CentOS-7', name: 'CentOS-{{centos_fullvers}}-centosplusplus' }
-      - { repo: 'http://mirror.nsc.liu.se/centos-store/{{centos_fullvers}}/fasttrack/x86_64/', remote_key: 'http://mirror.nsc.liu.se/centos-store/RPM-GPG-KEY-CentOS-7', name: 'CentOS-{{centos_fullvers}}-fasttrack' }
-      tags: 
-        - repos
-      when:
-        - use_centos_vault|bool
-        - not enable_repomirror|bool
-        - not local_install|bool
-
-    - role: trinity/repos
-      repos:
       - '{{mellanox_repo_dict}}'
       tags: 
         - mlnx-ofed
@@ -77,9 +57,6 @@
     - role: trinity/mlnx_ofed
       tags: mlnx-ofed
       when: use_mellanox_ofed|bool
-      
-    - role: trinity/cv_support
-      tags: cv_support
 
     - role: trinity/packages
       tags: packages
@@ -151,10 +128,10 @@
       tags: pdsh
 
     - role: trinity/ssl-cert
-      ssl_cert_country: 'NL'
-      ssl_cert_locality: 'Amsterdam'
-      ssl_cert_organization: 'ClusterVision B.V.'
-      ssl_cert_state: 'Noord Holland'
+      ssl_cert_country: 'UK'
+      ssl_cert_locality: 'London'
+      ssl_cert_organization: 'BIOS-IT'
+      #ssl_cert_state: ''
       ssl_cert_altname: '{{ trix_ctrl_hostname }}.{{ trix_domain }}'
       ssl_cert_days: '3650'
       tags: ssl-cert
@@ -224,6 +201,7 @@
             prefix: '{{ trix_cluster_netprefix }}'
             ns_ip: '{{ trix_ctrl_ip }}'
       tags: luna
+      when: enable_luna|bool
 
     - role: trinity/rsyslog
       syslog_listeners:

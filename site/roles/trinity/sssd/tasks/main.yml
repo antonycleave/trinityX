@@ -18,7 +18,7 @@
 
 - name: Copy CA certificate
   copy:
-    remote_src: true
+    remote_src: '{{ True if "controllers" in group_names else False }}'
     src: "{{ ssl_ca_cert }}"
     dest: /etc/openldap/certs/cluster-ca.crt
 

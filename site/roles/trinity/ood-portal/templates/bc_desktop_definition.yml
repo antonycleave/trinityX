@@ -1,6 +1,7 @@
 ---
 title: "Remote Desktop"
 cluster: {{ cluster_name }}
+submit: "my_submit.yml.erb"
 attributes:
   bc_account:
     help: "this should be left blank most of the time"

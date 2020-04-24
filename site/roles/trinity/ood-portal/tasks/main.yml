@@ -57,6 +57,7 @@
     mode: '0644'
     owner: root
     group: root
+  tags: ood_portal_reconfig
 
 - name: Render ood_portal remote_desktop config file
   template:
@@ -67,6 +68,13 @@
     group: root
     backup: yes
   when: enable_vnc_to_nodes == true
+  tags: ood_portal_reconfig
+
+- name: Copy the remote_desktop custom sumbit file
+  copy:
+    src: bc_desktop_custom_submit.yml
+    dest: "{{ ood_portal_cfg_path }}/apps/bc_desktop/my_submit.yml.erb"
+    force: true
 
 - name: Copy vscaler branding  to /var/www/ood/public 
   copy:
@@ -78,6 +86,7 @@
     - logo_color_black_padded.png
     - vscaler_header.jpg
   when: ood_portal_brand == "vscaler"
+  tags: ood_portal_reconfig
 
 - name: Apply vscaler welcome_html branding if appropriate
   replace:
@@ -86,6 +95,7 @@
     replace: '\1      {{ ood_welcome_text_branding.vscaler|join("\n      ")}}\n'
     backup: yes
   when: ood_portal_brand == "vscaler"
+  tags: ood_portal_reconfig
 
 - name: Apply vscaler pun_custom_env branding if appropriate
   blockinfile:
@@ -94,11 +104,13 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK for pun_custom_env"
     backup: yes
   when: '"cloudcontroller" not in group_names'
+  tags: ood_portal_reconfig
 
 - name: run update_ood_portal to generate webserver config file
-  command: '/opt/ood/ood-portal-generator/sbin/update_ood_portal'
+  command: '/opt/ood/ood-portal-generator/sbin/update_ood_portal -f'
   register: command_result
   #failed_when: "'Completed successfully!' not in command_result.stdout"
+  tags: ood_portal_reconfig
 
 - name: enable ood webserver by default
   service:
@@ -109,3 +121,4 @@
   service:
     name: httpd24-httpd
     state: restarted
+  tags: ood_portal_reconfig

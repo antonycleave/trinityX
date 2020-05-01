@@ -77,13 +77,13 @@
     nfs_mounts:
     - path: '{{ trix_shared }}'
       remote: '{{ trix_ctrl_hostname }}:{{ trix_shared }}'
-      options: 'defaults,nfsvers=4,ro,retrans=4'
+      options: 'defaults,ro'
     - path: '{{ trix_home }}'
       remote: '{{ trix_ctrl_hostname }}:{{ trix_home }}'
-      options: 'defaults,nfsvers=4,rw,retrans=4,noatime'
+      options: 'defaults,rw'
     - path: '/opt/ohpc'
       remote: '{{ trix_ctrl_hostname }}:{{ trix_ohpc }}'
-      options: 'defaults,nfsvers=4,ro,retrans=4,noatime'
+      options: 'defaults,ro'
     tags: nfs-mounts
 
   - role: trinity/sssd
